@@ -16,8 +16,6 @@ import { useUserStoreHook } from "@/store/modules/user";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
-  // 基础URL，所有请求都会以此为前缀
-  baseURL: "/api",
   // 请求超时时间
   timeout: 10000,
   headers: {
@@ -90,7 +88,7 @@ class PureHttp {
                     useUserStoreHook()
                       .handRefreshToken({ refreshToken: data.refreshToken })
                       .then(res => {
-                        const token = res.accessToken;
+                        const token = res.data.accessToken;
                         config.headers["Authorization"] = formatToken(token);
                         PureHttp.requests.forEach(cb => cb(token));
                         PureHttp.requests = [];
@@ -125,62 +123,22 @@ class PureHttp {
         const $config = response.config;
         // 关闭进度条动画
         NProgress.done();
-
-        // 获取后端响应数据
-        const responseData = response.data;
-
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof $config.beforeResponseCallback === "function") {
           $config.beforeResponseCallback(response);
-          return responseData;
+          return response.data;
         }
         if (PureHttp.initConfig.beforeResponseCallback) {
           PureHttp.initConfig.beforeResponseCallback(response);
-          return responseData;
+          return response.data;
         }
-
-        // 处理后端统一响应格式
-        // 后端返回格式: { success, code, message, data, timestamp }
-        if (responseData && typeof responseData === "object") {
-          // 检查是否是后端统一响应格式
-          if ("success" in responseData && "code" in responseData) {
-            // 如果 success 为 false，抛出错误
-            if (!responseData.success) {
-              const error: any = new Error(responseData.message || "请求失败");
-              error.code = responseData.code;
-              error.response = response;
-              return Promise.reject(error);
-            }
-            // success 为 true，返回 data 字段
-            return responseData.data;
-          }
-        }
-
-        // 兼容旧格式或其他格式，直接返回
-        return responseData;
+        return response.data;
       },
       (error: PureHttpError) => {
         const $error = error;
         $error.isCancelRequest = Axios.isCancel($error);
         // 关闭进度条动画
         NProgress.done();
-
-        // 处理错误响应
-        if ($error.response) {
-          const responseData = $error.response.data;
-          // 如果后端返回了统一格式的错误信息
-          if (
-            responseData &&
-            typeof responseData === "object" &&
-            "message" in responseData
-          ) {
-            const message = (responseData as any).message;
-            if (typeof message === "string") {
-              $error.message = message;
-            }
-          }
-        }
-
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);
       }

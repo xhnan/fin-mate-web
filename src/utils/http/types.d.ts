@@ -9,15 +9,6 @@ export type resultType = {
   accessToken?: string;
 };
 
-// 后端统一响应格式
-export interface Result<T = any> {
-  success: boolean;
-  code: number;
-  message: string;
-  data: T;
-  timestamp: number;
-}
-
 export type RequestMethods = Extract<
   Method,
   "get" | "post" | "put" | "delete" | "patch" | "option" | "head"
