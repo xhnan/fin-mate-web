@@ -126,13 +126,18 @@ class PureHttp {
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof $config.beforeResponseCallback === "function") {
           $config.beforeResponseCallback(response);
-          return response.data;
+          // return response.data;
         }
         if (PureHttp.initConfig.beforeResponseCallback) {
           PureHttp.initConfig.beforeResponseCallback(response);
-          return response.data;
+          // return response.data;
         }
-        return response.data;
+        const api = response.data;
+        if (api && api.success === true) {
+          return api.data;
+        }
+        return Promise.reject(api);
+        // return response.data;
       },
       (error: PureHttpError) => {
         const $error = error;
