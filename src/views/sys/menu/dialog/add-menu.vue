@@ -1,26 +1,26 @@
 <template>
   <div>
     <el-dialog
-      title="新增菜单"
       v-model="dialogVisible"
+      title="新增菜单"
       width="600px"
       :before-close="() => {}"
     >
       <el-form label-width="100px">
         <el-form-item label="菜单名称">
-          <el-input v-model="menuInfo.menuName" placeholder="请输入菜单名称"></el-input>
+          <el-input v-model="menuInfo.menuName" placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单路径">
-          <el-input v-model="menuInfo.menuPath" placeholder="请输入菜单路径"></el-input>
+          <el-input v-model="menuInfo.path" placeholder="请输入菜单路径" />
         </el-form-item>
         <el-form-item label="图标">
-          <el-input v-model="menuInfo.menuIcon" placeholder="请输入图标类名"></el-input>
+          <el-input v-model="menuInfo.icon" placeholder="请输入图标类名" />
         </el-form-item>
         <el-form-item label="排序">
-          <el-input-number v-model="menuInfo.menuOrder" :min="1"></el-input-number>
+          <el-input-number v-model="menuInfo.sort" :min="1" />
         </el-form-item>
         <el-form-item label="是否显示">
-          <el-switch v-model="menuInfo.menuVisible"></el-switch>
+          <el-switch v-model="menuInfo.visible" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -38,7 +38,17 @@ defineOptions({
   name: "AddMenuDialog"
 });
 const dialogVisible = ref(false);
-const menuInfo = ref("");
-
+const menuInfo = ref({
+  menuName: "",
+  menuType: "",
+  path: "",
+  component: "",
+  perms: "",
+  icon: "",
+  sort: 1,
+  visible: 1,
+  status: 1,
+  remark: ""
+});
 </script>
 <style scoped lang="scss"></style>
