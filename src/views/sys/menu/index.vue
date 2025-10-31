@@ -31,13 +31,16 @@
         </div>
       </el-main>
     </el-container>
+    <change-menu-dialog ref="changeMenuDialogRef" />
   </div>
 </template>
 <script setup lang="ts">
 import EpRefresh from "~icons/ep/refresh";
 import TablerArrowsMinimize from "~icons/tabler/arrows-minimize";
 import { ref } from "vue";
+import ChangeMenuDialog from "@/views/sys/menu/dialog/change-menu.vue";
 
+const changeMenuDialogRef = ref();
 defineOptions({
   name: "SysMenu"
 });
@@ -46,6 +49,7 @@ const menuList = ref([]);
 
 const onAdd = () => {
   // 新增菜单逻辑
+  changeMenuDialogRef.value.open();
 };
 
 const onRefresh = () => {
